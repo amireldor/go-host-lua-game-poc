@@ -8,7 +8,7 @@ some reason, and is written in Lua.
 
 Definition of done:
 
-- [*] a "game host" or "worker" running a Lua game with an ECS
+- [x] a "game host" or "worker" running a Lua game with an ECS
 - [ ] save functionality, exports to file/database/whatever
 - [ ] get input from player
 - [ ] show state to player
