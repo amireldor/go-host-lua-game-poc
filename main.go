@@ -13,9 +13,11 @@ func save(L *lua.LState) int {
 		if k.String() == "saveable" {
 			return
 		}
+		// TODO: The goal is to batch updates to entities by their "saveable" id and persist them.
 		fmt.Println("save", k, v)
 	})
 	L.Push(lua.LNumber(0))
+	fmt.Println()
 	return 1
 }
 
@@ -41,5 +43,6 @@ func worker() {
 
 func main() {
 	fmt.Println("Hello.")
+	// TODO: demonstrate running multiple workers
 	worker()
 }

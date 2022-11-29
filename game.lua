@@ -23,8 +23,14 @@ local spaceship = {
 	saveable = "spaceship:0001",
 }
 
-local world = tiny.world(flightSystem, saveSystem, spaceship)
+local fasterShip = {
+	flying = true,
+	position = 0,
+	speed = 5.0,
+	saveable = "spaceship:0002",
+}
 
+local world = tiny.world(flightSystem, saveSystem, spaceship, fasterShip)
 
 function tick(dt)
 	world:update(dt)
