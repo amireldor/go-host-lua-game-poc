@@ -11,4 +11,4 @@ Definition of done:
 - [x] a "game host" or "worker" running a Lua game with an ECS
 - [x] save and load functionality, exports to file/database/whatever
 - [ ] get input from player
-- [ ] show state to player
+- [x] ~~show state to player~~ this is not not needed because we can read state directly from the persistence layer (e.g. sqlite in this case)
