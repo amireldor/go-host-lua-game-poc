@@ -133,7 +133,6 @@ func worker(gameid string, wg *sync.WaitGroup) {
 
 func main() {
 	fmt.Println("Hello.")
-	// TODO: demonstrate running multiple workers
 	wg := sync.WaitGroup{}
 	wg.Add(3)
 	go worker("gameid:0001", &wg)
