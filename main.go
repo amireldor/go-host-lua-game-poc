@@ -140,9 +140,10 @@ func worker(gameid string, wg *sync.WaitGroup) {
 func main() {
 	fmt.Println("Hello.")
 	wg := sync.WaitGroup{}
-	wg.Add(3)
+	wg.Add(4)
 	go worker("gameid:0001", &wg)
 	go worker("gameid:0002", &wg)
 	go worker("gameid:0003", &wg)
+	go worker("premium:0004", &wg)
 	wg.Wait()
 }
