@@ -28,7 +28,19 @@ function saveSystem:process(e, dt)
 	end
 end
 
-local world = tiny.world(flightSystem, saveSystem)
+local migrationSystem = tiny.processingSystem()
+migrationSystem.filter = tiny.requireAll("saveable")
+function migrationSystem:onAdd(e)
+	if e._v == nil then
+		e._v = 1
+		e.tag = "spaceship"
+	elseif e._v == 1 then
+		e._v = 2
+		e.speed = e.speed * 1.2
+	end
+end
+
+local world = tiny.world(migrationSystem, flightSystem, saveSystem)
 
 function newGame()
 	world:clearEntities()
