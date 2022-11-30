@@ -25,8 +25,8 @@ local spaceship = {
 
 local fasterShip = {
 	flying = true,
-	position = 0,
-	speed = 5.0,
+	position = 10.2,
+	speed = 5.123,
 	saveable = "spaceship:0002",
 }
 

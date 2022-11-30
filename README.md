@@ -9,6 +9,6 @@ some reason, and is written in Lua.
 Definition of done:
 
 - [x] a "game host" or "worker" running a Lua game with an ECS
-- [ ] save functionality, exports to file/database/whatever
+- [ ] save and load functionality, exports to file/database/whatever
 - [ ] get input from player
 - [ ] show state to player
