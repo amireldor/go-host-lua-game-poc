@@ -41,13 +41,14 @@ func save(db *sql.DB, gameid string, L *lua.LState) int {
 	return 1
 }
 
-func load(db *sql.DB, gameid string, L *lua.LState) {
+func load(db *sql.DB, gameid string, L *lua.LState) int {
 	rows, err := db.Query("SELECT entity, data FROM gamedata WHERE gameid=?", gameid)
 	if err != nil {
 		log.Fatalf("Failed to load game data for game %s: %s\n", gameid, err)
 	}
 	defer rows.Close()
 
+	entities := 0
 	for rows.Next() {
 		var entity string
 		var data string
@@ -80,8 +81,10 @@ func load(db *sql.DB, gameid string, L *lua.LState) {
 			}, entityAsTable); err != nil {
 				log.Fatalf("Failed to call addEntity for entity %s in game %s: %s\n", entity, gameid, err)
 			}
+			entities += 1
 		}
 	}
+	return entities
 }
 
 func worker(gameid string, wg *sync.WaitGroup) {
@@ -108,7 +111,14 @@ func worker(gameid string, wg *sync.WaitGroup) {
 		panic(err)
 	}
 
-	load(db, gameid, L)
+	entitiesLoaded := load(db, gameid, L)
+	if entitiesLoaded == 0 {
+		if err := L.CallByParam(lua.P{
+			Fn: L.GetGlobal("newGame"), NRet: 0, Protect: true,
+		}); err != nil {
+			panic(err)
+		}
+	}
 
 	for i := 1; i <= 100; i++ {
 		if err := L.CallByParam(lua.P{
@@ -125,8 +135,9 @@ func main() {
 	fmt.Println("Hello.")
 	// TODO: demonstrate running multiple workers
 	wg := sync.WaitGroup{}
-	wg.Add(2)
+	wg.Add(3)
 	go worker("gameid:0001", &wg)
 	go worker("gameid:0002", &wg)
+	go worker("gameid:0003", &wg)
 	wg.Wait()
 }

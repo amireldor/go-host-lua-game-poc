@@ -16,26 +16,28 @@ function saveSystem:process(e, dt)
 	end
 end
 
-local spaceship = {
-	flying = true,
-	position = 0,
-	speed = 0.7,
-	saveable = "spaceship:0001",
-}
+local world = tiny.world(flightSystem, saveSystem)
 
-local fasterShip = {
-	flying = true,
-	position = 10.2,
-	speed = 5.123,
-	saveable = "spaceship:0002",
-}
-
-local world = tiny.world(flightSystem, saveSystem, spaceship, fasterShip)
+function newGame()
+	world:clearEntities()
+	world:addEntity({
+		flying = true,
+		position = 0,
+		speed = 8.4,
+		saveable = "niceship001"
+	})
+	world:addEntity({
+		flying = true,
+		position = 0,
+		speed = 1,
+		saveable = "niceship002"
+	})
+end
 
 function tick(dt)
 	world:update(dt)
 end
 
 function addEntity(e)
-	tiny.addEntity(world, e)
+	world:addEntity(e)
 end
