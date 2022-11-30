@@ -34,7 +34,8 @@ function migrationSystem:onAdd(e)
 	if e._v == nil then
 		e._v = 1
 		e.tag = "spaceship"
-	elseif e._v == 1 then
+	end
+	if e._v == 1 and e.tag == "spaceship" then
 		e._v = 2
 		e.speed = e.speed * 1.2
 	end
