@@ -107,6 +107,12 @@ func worker(gameid string, wg *sync.WaitGroup) {
 		return 0
 	}))
 
+	L.SetGlobal("notify", L.NewFunction(func(L *lua.LState) int {
+		m := L.ToString(1)
+		log.Printf("[%s] %s\n", gameid, m)
+		return 0
+	}))
+
 	if err := L.DoFile("game.lua"); err != nil {
 		panic(err)
 	}

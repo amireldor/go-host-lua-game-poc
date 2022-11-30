@@ -3,7 +3,11 @@ local tiny = require("tiny")
 local flightSystem = tiny.processingSystem()
 flightSystem.filter = tiny.requireAll("flying", "position", "speed")
 function flightSystem:process(e, dt) 
+	local prev = e.position
 	e.position = e.position + e.speed * dt
+	if prev < 10000 and e.position >= 10000 then
+		notify("Ship " .. e.saveable .. " have reached the moon!")
+	end
 end
 
 local saveSystem = tiny.processingSystem()

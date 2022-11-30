@@ -12,3 +12,4 @@ Definition of done:
 - [x] save and load functionality, exports to file/database/whatever
 - [ ] get input from player
 - [x] ~~show state to player~~ this is not not needed because we can read state directly from the persistence layer (e.g. sqlite in this case)
+- [x] notify the outside world about events happening in the game
