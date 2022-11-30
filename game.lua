@@ -35,3 +35,7 @@ local world = tiny.world(flightSystem, saveSystem, spaceship, fasterShip)
 function tick(dt)
 	world:update(dt)
 end
+
+function addEntity(e)
+	tiny.addEntity(world, e)
+end
