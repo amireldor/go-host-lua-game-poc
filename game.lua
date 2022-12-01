@@ -5,11 +5,11 @@ flightSystem.filter = tiny.requireAll("flying", "position", "speed")
 function flightSystem:process(e, dt) 
 	local prev = e.position
 	e.position = e.position + e.speed * dt
-	if prev < 1000 and e.position >= 1000 then
+	if prev < 500 and e.position >= 500 then
 		notify("Ship " .. e.saveable .. " have reached the moon!")
 	end
 
-	if e.position >= 1100 then
+	if e.position >= 600 then
 		e.speed = -math.abs(e.speed)
 	end
 
