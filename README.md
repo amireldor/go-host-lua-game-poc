@@ -13,3 +13,8 @@ Definition of done:
 - [ ] get input from player
 - [x] ~~show state to player~~ this is not not needed because we can read state directly from the persistence layer (e.g. sqlite in this case)
 - [x] notify the outside world about events happening in the game
+
+## Makefile
+
+- `make dev`: run the server
+- `make view`: opens a watcher on the db file so you can see the games' state (needs sqlite3 command)
