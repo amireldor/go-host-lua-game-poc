@@ -16,5 +16,7 @@ Definition of done:
 
 ## Makefile
 
-- `make dev`: run the server
+Run the following commands in two terminals:
+
 - `make view`: opens a watcher on the db file so you can see the games' state (needs sqlite3 command)
+- `make dev`: run the server

@@ -2,6 +2,6 @@ dev: FORCE
 	go run .
 
 view: FORCE
-	watch 'sqlite3 saves.db "SELECT * FROM gamedata"'
+	watch -n 1 'sqlite3 --readonly saves.db "SELECT * FROM gamedata"'
 
 FORCE: ;

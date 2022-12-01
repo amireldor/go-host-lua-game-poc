@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"sync"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 
@@ -87,7 +87,7 @@ func load(db *sql.DB, gameid string, L *lua.LState) int {
 	return entities
 }
 
-func worker(gameid string, wg *sync.WaitGroup) {
+func worker(gameid string, commands chan string) {
 	db, err := sql.Open("sqlite3", "./saves.db")
 	if err != nil {
 		panic("failed to open saves database")
@@ -126,24 +126,62 @@ func worker(gameid string, wg *sync.WaitGroup) {
 		}
 	}
 
-	for i := 1; i <= 100; i++ {
-		if err := L.CallByParam(lua.P{
-			Fn: L.GetGlobal("tick"), NRet: 0, Protect: true,
-		}, lua.LNumber(1.0)); err != nil {
-			panic(err)
+	// sorry for non-idiomatic Go code
+	run := true
+	for run {
+		select {
+		case <-time.After(1 * time.Second):
+			if err := L.CallByParam(lua.P{
+				Fn: L.GetGlobal("tick"), NRet: 0, Protect: true,
+			}, lua.LNumber(1.0)); err != nil {
+				panic(err)
+			}
+		case cmd := <-commands:
+			switch cmd {
+			case "q":
+				run = false
+				commands <- "q" // let others consume the quit command too
+			default:
+				fmt.Printf("wooho! command for %s\n", gameid)
+			}
 		}
 	}
+}
 
-	wg.Done()
+func inputLoop(chs map[string]chan string) {
+	// sorry for non-idiomatic Go code
+	for {
+		var cmd string
+		var data string
+		fmt.Print("(q to quit, c <gameid> for sending command): ")
+		fmt.Scanln(&cmd, &data)
+		switch cmd {
+		case "q":
+			for _, v := range chs {
+				v <- "q"
+			}
+			fmt.Println("Bye.")
+			return
+		case "c":
+			if ch, ok := chs[data]; ok {
+				ch <- data
+			}
+		}
+	}
+}
+
+func processGame(gameid string, chs map[string]chan string) {
+	commands := make(chan string)
+	go worker(gameid, commands)
+	chs[gameid] = commands
 }
 
 func main() {
 	fmt.Println("Hello.")
-	wg := sync.WaitGroup{}
-	wg.Add(4)
-	go worker("gameid:0001", &wg)
-	go worker("gameid:0002", &wg)
-	go worker("gameid:0003", &wg)
-	go worker("premium:0004", &wg)
-	wg.Wait()
+	chs := make(map[string]chan string)
+	processGame("g1", chs)
+	processGame("g2", chs)
+	processGame("g3", chs)
+	processGame("g4", chs)
+	inputLoop(chs)
 }
