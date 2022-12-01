@@ -75,14 +75,15 @@ func load(db *sql.DB, gameid string, L *lua.LState) int {
 			case string:
 				entityAsTable.RawSetString(k, lua.LString(v.(string)))
 			}
-
-			if err := L.CallByParam(lua.P{
-				Fn: L.GetGlobal("addEntity"), NRet: 0, Protect: true,
-			}, entityAsTable); err != nil {
-				log.Fatalf("Failed to call addEntity for entity %s in game %s: %s\n", entity, gameid, err)
-			}
-			entities += 1
 		}
+
+		if err := L.CallByParam(lua.P{
+			Fn: L.GetGlobal("addEntity"), NRet: 0, Protect: true,
+		}, entityAsTable); err != nil {
+			log.Fatalf("Failed to call addEntity for entity %s in game %s: %s\n", entity, gameid, err)
+		}
+
+		entities += 1
 	}
 	return entities
 }
@@ -142,7 +143,11 @@ func worker(gameid string, commands chan string) {
 				run = false
 				commands <- "q" // let others consume the quit command too
 			default:
-				fmt.Printf("wooho! command for %s\n", gameid)
+				if err := L.CallByParam(lua.P{
+					Fn: L.GetGlobal("input"), NRet: 0, Protect: true,
+				}, lua.LString(cmd)); err != nil {
+					panic(err)
+				}
 			}
 		}
 	}
@@ -152,9 +157,10 @@ func inputLoop(chs map[string]chan string) {
 	// sorry for non-idiomatic Go code
 	for {
 		var cmd string
-		var data string
+		var gameid string
+		var data string = ""
 		fmt.Print("(q to quit, c <gameid> for sending command): ")
-		fmt.Scanln(&cmd, &data)
+		fmt.Scanln(&cmd, &gameid, &data)
 		switch cmd {
 		case "q":
 			for _, v := range chs {
@@ -163,7 +169,7 @@ func inputLoop(chs map[string]chan string) {
 			fmt.Println("Bye.")
 			return
 		case "c":
-			if ch, ok := chs[data]; ok {
+			if ch, ok := chs[gameid]; ok {
 				ch <- data
 			}
 		}

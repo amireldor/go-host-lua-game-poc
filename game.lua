@@ -41,7 +41,17 @@ function migrationSystem:onAdd(e)
 	end
 end
 
-local world = tiny.world(migrationSystem, flightSystem, saveSystem)
+local entitiesTrackerSystem = tiny.processingSystem()
+entitiesTrackerSystem.filter = tiny.requireAny("saveable")
+entitiesTrackerSystem.entities = {}
+function entitiesTrackerSystem:onAdd(e) 
+	self.entities[e.saveable] = e
+end
+function entitiesTrackerSystem:onRemove(e) 
+	self.entities.remove(e.saveable) -- TODO: does this work?
+end
+
+local world = tiny.world(migrationSystem, flightSystem, saveSystem, entitiesTrackerSystem)
 
 function newGame()
 	world:clearEntities()
@@ -65,4 +75,12 @@ end
 
 function addEntity(e)
 	world:addEntity(e)
+end
+
+function input(data)
+	local e = entitiesTrackerSystem.entities[data]
+	if e then
+		notify("Ship " .. e.saveable .. " will turn around")
+		e.speed = -e.speed
+	end
 end
