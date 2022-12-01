@@ -19,4 +19,17 @@ Definition of done:
 Run the following commands in two terminals:
 
 - `make view`: opens a watcher on the db file so you can see the games' state (needs sqlite3 command)
-- `make dev`: run the server
+- `make run`: run the server
+
+## Play around
+
+Example stuff you can enter in the `make run` prompt:
+
+```
+c g1 niceship001
+c g2 niceship001
+c g1 niceship002
+c g4 niceship001
+...
+q
+```

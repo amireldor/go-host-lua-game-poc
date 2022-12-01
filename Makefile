@@ -1,4 +1,4 @@
-dev: FORCE
+run: FORCE
 	go run .
 
 view: FORCE
