@@ -34,10 +34,10 @@ func save(db *sql.DB, gameid string, L *lua.LState) int {
 		log.Fatalf("failed to marshal entity save data for entity %s\n", entity)
 	}
 	go func() {
-	_, err = db.Exec("INSERT INTO gamedata (gameid, entity, data) VALUES (?, ?, ?) ON CONFLICT(gameid, entity) DO UPDATE SET data=?", gameid, entity, asJson, asJson)
-	if err != nil {
-		log.Fatalf("Failed upserting entity %s data to database: %s\n", entity, err)
-	}
+		_, err = db.Exec("INSERT INTO gamedata (gameid, entity, data) VALUES (?, ?, ?) ON CONFLICT(gameid, entity) DO UPDATE SET data=?", gameid, entity, asJson, asJson)
+		if err != nil {
+			log.Fatalf("Failed upserting entity %s data to database: %s\n", entity, err)
+		}
 	}()
 	L.Push(lua.LNumber(0))
 	return 1
